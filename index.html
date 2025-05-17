@@ -156,7 +156,23 @@
       if (stats.mutasi === 0) {
         hasil += "Tidak ditemukan mutasi. DNA pasien identik dengan referensi.";
       } else {
-        hasil += "Mutasi ditemukan. Diperlukan analisis lanjutan untuk interpretasi biologis.";
+        hasil += `<strong>Mutasi ditemukan.</strong> Diperlukan analisis lanjutan untuk interpretasi biologis.<br><br>`;
+
+        hasil += `<strong>Interpretasi Biologis (sederhana):</strong><ul>`;
+
+        if (stats.substitusi > 0) {
+          hasil += `<li><strong>Substitusi</strong>: Bisa menyebabkan perubahan asam amino (missense), atau tidak berdampak jika silent mutation. Perlu analisis kodon/genetik lebih lanjut.</li>`;
+        }
+
+        if (stats.delesi > 0) {
+          hasil += `<li><strong>Delesi</strong>: Dapat menyebabkan frameshift yang bisa mengubah keseluruhan rangkaian protein. Cenderung berdampak besar.</li>`;
+        }
+
+        if (stats.insersi > 0) {
+          hasil += `<li><strong>Insersi</strong>: Seperti delesi, dapat menyebabkan frameshift dan berpotensi menghasilkan protein nonfungsional.</li>`;
+        }
+
+        hasil += `</ul>`;
       }
 
       document.getElementById('hasil').innerHTML = hasil;
