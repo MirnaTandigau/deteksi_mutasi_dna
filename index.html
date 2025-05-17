@@ -5,32 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deteksi Mutasi DNA</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      background: linear-gradient(135deg, #90caf9, #f48fb1);
       margin: 0;
       padding: 0;
+      overflow-x: hidden;
     }
 
     .container {
       max-width: 900px;
       margin: 40px auto;
-      background-color: #fff;
+      background-color: #fdfdfd;
       padding: 30px;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.6s ease-out forwards;
+      transform: translateY(30px);
+      opacity: 0;
+      position: relative;
+    }
+
+    @keyframes slideIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     h2 {
       text-align: center;
-      color: #0d47a1;
+      color: #1a237e;
+      animation: fadeIn 1s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     label {
       font-weight: bold;
       display: block;
       margin-top: 20px;
+      color: #0d47a1;
+      animation: fadeInUp 0.5s ease-out;
     }
 
     textarea {
@@ -42,11 +62,13 @@
       border-radius: 8px;
       font-family: monospace;
       resize: vertical;
+      animation: fadeInUp 0.5s ease-out;
+      background-color: #fce4ec;
     }
 
     button {
       display: block;
-      background-color: #0d47a1;
+      background-color: #1a237e;
       color: white;
       border: none;
       border-radius: 8px;
@@ -54,18 +76,20 @@
       margin: 20px auto 0;
       font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s;
+      animation: bounceIn 0.8s ease;
     }
 
     button:hover {
-      background-color: #1565c0;
+      background-color: #3949ab;
+      transform: scale(1.05);
     }
 
     .result {
       margin-top: 30px;
-      background: #f5f5f5;
+      background: #f3e5f5;
       padding: 20px;
-      border-left: 6px solid #0d47a1;
+      border-left: 6px solid #1a237e;
       border-radius: 10px;
       animation: fadeIn 0.5s ease-in;
     }
@@ -83,7 +107,7 @@
     }
 
     th {
-      background-color: #0d47a1;
+      background-color: #1a237e;
       color: white;
     }
 
@@ -95,28 +119,44 @@
     .sequence {
       font-family: monospace;
       word-wrap: break-word;
-      background: #e3f2fd;
+      background: #e1f5fe;
       padding: 10px;
       border-radius: 6px;
       margin-top: 5px;
     }
 
+    .icon {
+      font-size: 24px;
+      color: #4a148c;
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      60% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Deteksi Mutasi DNA</h2>
+    <h2><i class="fas fa-dna icon"></i> Deteksi Mutasi DNA</h2>
     <label>DNA Referensi:</label>
     <textarea id="dnaRef" placeholder="Contoh: ATGCTAGCTAGGCTA"></textarea>
 
     <label>DNA Pasien:</label>
     <textarea id="dnaPasien" placeholder="Contoh: ATGCTAGATAGGCTA"></textarea>
 
-    <button onclick="deteksiMutasi()">Deteksi Mutasi</button>
+    <button onclick="deteksiMutasi()"><i class="fas fa-search icon"></i> Deteksi Mutasi</button>
 
     <div class="result" id="hasil"></div>
   </div>
