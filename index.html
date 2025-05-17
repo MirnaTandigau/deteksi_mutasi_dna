@@ -1,73 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deteksi Mutasi DNA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f8;
-      padding: 20px;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      margin: 0;
+      padding: 0;
     }
+
     .container {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+    }
+
     textarea {
       width: 100%;
       height: 100px;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
       font-family: monospace;
+      resize: vertical;
     }
+
     button {
-      background-color: #007bff;
+      display: block;
+      background-color: #0d47a1;
       color: white;
-      padding: 10px 15px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 20px auto 0;
+      font-size: 16px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
-      background-color: #0056b3;
+      background-color: #1565c0;
     }
+
     .result {
-      margin-top: 20px;
-      background: #f9f9f9;
-      padding: 15px;
-      border-left: 4px solid #007bff;
-      border-radius: 6px;
+      margin-top: 30px;
+      background: #f5f5f5;
+      padding: 20px;
+      border-left: 6px solid #0d47a1;
+      border-radius: 10px;
+      animation: fadeIn 0.5s ease-in;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 20px;
     }
+
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
     }
+
     th {
-      background-color: #007bff;
+      background-color: #0d47a1;
       color: white;
     }
+
     .highlight {
       background-color: yellow;
       font-weight: bold;
     }
+
     .sequence {
       font-family: monospace;
       word-wrap: break-word;
-      background: #eef2f7;
+      background: #e3f2fd;
       padding: 10px;
       border-radius: 6px;
+      margin-top: 5px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -142,37 +178,30 @@
 
       tabel += "</table>";
 
-      hasil += `<strong>Jumlah Mutasi:</strong> ${stats.mutasi}<br>`;
-      hasil += `<strong>Substitusi:</strong> ${stats.substitusi} | <strong>Delesi:</strong> ${stats.delesi} | <strong>Insersi:</strong> ${stats.insersi}<br><br>`;
-
       const { refOut, pasienOut } = highlightSeq(ref, pasien);
 
+      hasil += `<strong>Jumlah Mutasi:</strong> ${stats.mutasi}<br>`;
+      hasil += `<strong>Substitusi:</strong> ${stats.substitusi} | <strong>Delesi:</strong> ${stats.delesi} | <strong>Insersi:</strong> ${stats.insersi}<br><br>`;
       hasil += `<strong>Referensi:</strong><div class='sequence'>${refOut}</div>`;
       hasil += `<strong>Pasien:</strong><div class='sequence'>${pasienOut}</div><br>`;
-
       hasil += tabel;
 
       hasil += "<br><strong>Kesimpulan:</strong><br>";
       if (stats.mutasi === 0) {
         hasil += "Tidak ditemukan mutasi. DNA pasien identik dengan referensi.";
       } else {
-        hasil += `<strong>Mutasi ditemukan.</strong> Diperlukan analisis lanjutan untuk interpretasi biologis.<br><br>`;
-
-        hasil += `<strong>Interpretasi Biologis (sederhana):</strong><ul>`;
-
+        hasil += "Mutasi ditemukan. Diperlukan analisis lanjutan untuk interpretasi biologis.<br><br>";
+        hasil += "<strong>Interpretasi Biologis:</strong><ul>";
         if (stats.substitusi > 0) {
-          hasil += `<li><strong>Substitusi</strong>: Bisa menyebabkan perubahan asam amino (missense), atau tidak berdampak jika silent mutation. Perlu analisis kodon/genetik lebih lanjut.</li>`;
+          hasil += "<li><b>Substitusi:</b> Dapat menyebabkan perubahan asam amino (missense), berhenti sintesis protein (nonsense), atau tidak berdampak (silent).</li>";
         }
-
         if (stats.delesi > 0) {
-          hasil += `<li><strong>Delesi</strong>: Dapat menyebabkan frameshift yang bisa mengubah keseluruhan rangkaian protein. Cenderung berdampak besar.</li>`;
+          hasil += "<li><b>Delesi:</b> Kehilangan nukleotida bisa menyebabkan frameshift mutation yang merusak struktur protein.</li>";
         }
-
         if (stats.insersi > 0) {
-          hasil += `<li><strong>Insersi</strong>: Seperti delesi, dapat menyebabkan frameshift dan berpotensi menghasilkan protein nonfungsional.</li>`;
+          hasil += "<li><b>Insersi:</b> Penambahan nukleotida bisa menggeser rangka baca DNA dan menghasilkan protein nonfungsional.</li>";
         }
-
-        hasil += `</ul>`;
+        hasil += "</ul>";
       }
 
       document.getElementById('hasil').innerHTML = hasil;
