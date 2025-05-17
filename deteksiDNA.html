@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deteksi Mutasi DNA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-left: 4px solid #007bff;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+    }
+    .sequence {
+      font-family: monospace;
+      word-wrap: break-word;
+      background: #eef2f7;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Deteksi Mutasi DNA</h2>
+    <label>DNA Referensi:</label>
+    <textarea id="dnaRef" placeholder="Contoh: ATGCTAGCTAGGCTA"></textarea>
+
+    <label>DNA Pasien:</label>
+    <textarea id="dnaPasien" placeholder="Contoh: ATGCTAGATAGGCTA"></textarea>
+
+    <button onclick="deteksiMutasi()">Deteksi Mutasi</button>
+
+    <div class="result" id="hasil"></div>
+  </div>
+
+  <script>
+    function highlightSeq(ref, pasien) {
+      let refOut = "";
+      let pasienOut = "";
+      const maxLen = Math.max(ref.length, pasien.length);
+
+      for (let i = 0; i < maxLen; i++) {
+        const r = ref[i] || "-";
+        const p = pasien[i] || "-";
+
+        if (r !== p) {
+          refOut += `<span class='highlight'>${r}</span>`;
+          pasienOut += `<span class='highlight'>${p}</span>`;
+        } else {
+          refOut += r;
+          pasienOut += p;
+        }
+      }
+      return { refOut, pasienOut };
+    }
+
+    function deteksiMutasi() {
+      const ref = document.getElementById('dnaRef').value.trim().toUpperCase();
+      const pasien = document.getElementById('dnaPasien').value.trim().toUpperCase();
+      let hasil = "";
+      let tabel = "";
+      let stats = {
+        total: Math.max(ref.length, pasien.length),
+        mutasi: 0,
+        substitusi: 0,
+        delesi: 0,
+        insersi: 0
+      };
+
+      tabel += "<table><tr><th>Posisi</th><th>Tipe Mutasi</th><th>Referensi</th><th>Pasien</th></tr>";
+
+      const panjang = Math.min(ref.length, pasien.length);
+      for (let i = 0; i < panjang; i++) {
+        if (ref[i] !== pasien[i]) {
+          tabel += `<tr><td>${i+1}</td><td>Substitusi</td><td>${ref[i]}</td><td>${pasien[i]}</td></tr>`;
+          stats.mutasi++;
+          stats.substitusi++;
+        }
+      }
+
+      if (ref.length > pasien.length) {
+        stats.mutasi++;
+        stats.delesi++;
+        tabel += `<tr><td>${pasien.length+1}</td><td>Delesi</td><td>${ref.slice(pasien.length)}</td><td>-</td></tr>`;
+      } else if (pasien.length > ref.length) {
+        stats.mutasi++;
+        stats.insersi++;
+        tabel += `<tr><td>${ref.length+1}</td><td>Insersi</td><td>-</td><td>${pasien.slice(ref.length)}</td></tr>`;
+      }
+
+      tabel += "</table>";
+
+      hasil += `<strong>Jumlah Mutasi:</strong> ${stats.mutasi}<br>`;
+      hasil += `<strong>Substitusi:</strong> ${stats.substitusi} | <strong>Delesi:</strong> ${stats.delesi} | <strong>Insersi:</strong> ${stats.insersi}<br><br>`;
+
+      const { refOut, pasienOut } = highlightSeq(ref, pasien);
+
+      hasil += `<strong>Referensi:</strong><div class='sequence'>${refOut}</div>`;
+      hasil += `<strong>Pasien:</strong><div class='sequence'>${pasienOut}</div><br>`;
+
+      hasil += tabel;
+
+      hasil += "<br><strong>Kesimpulan:</strong><br>";
+      if (stats.mutasi === 0) {
+        hasil += "Tidak ditemukan mutasi. DNA pasien identik dengan referensi.";
+      } else {
+        hasil += "Mutasi ditemukan. Diperlukan analisis lanjutan untuk interpretasi biologis.";
+      }
+
+      document.getElementById('hasil').innerHTML = hasil;
+    }
+  </script>
+</body>
+</html>
